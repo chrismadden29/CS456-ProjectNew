@@ -1,36 +1,36 @@
 {
   "fibonacciFacts": [
     {
-      "id": 2,
-      "fact": "Each number is the sum of the two preceding numbers"
+      "id": 1,
+      "fact": "Each number is the sum of the previous"
     },
     {
-      "id": 3,
+      "id": 2,
       "fact": "The sequence appears in the spiral of nautilus shells"
     },
     {
-      "id": 4,
+      "id": 3,
       "fact": "The golden ratio (1.618) is derived from the Fibonacci sequence"
     },
     {
-      "id": 5,
+      "id": 4,
       "fact": "Sunflower seeds arrange themselves in Fibonacci spirals"
     },
     {
-      "id": 6,
+      "id": 5,
       "fact": "Pinecones display Fibonacci spirals in their scales"
     },
     {
-      "id": 7,
+      "id": 6,
       "fact": "The sequence was introduced to Europe by Leonardo of Pisa in 1202"
     },
     {
-      "id": 8,
+      "id": 7,
       "fact": "Tree branches grow following Fibonacci patterns"
     },
     {
       "fact": "The 10th Fibonacci number is 55",
-      "id": 9
+      "id": 8
     }
   ]
 }
