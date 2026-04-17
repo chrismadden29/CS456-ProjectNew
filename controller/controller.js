@@ -1,13 +1,16 @@
-const dao = require('../model/dao');
+//Now uses new MongoDB dao
+const dao = require('../model/MongoDB-dao.js');
 
-exports.getAllFacts = function(req, res){
+//Switched to async function due to new dao
+exports.getAllFacts = async function(req, res){
     res.status(200);
-    res.send(dao.readAll());
+    res.send(await dao.readAllFacts());
 };
 
-exports.get = function(req, res){
-    let id = parseInt(req.params.id);
-    let fact = dao.read(id);
+//Async function for new dao
+exports.getFact = async function(req, res){
+    let id = req.params.id; //Removed parseint because MongoDB id's are strings
+    let fact = await dao.readFact(id);
 
     if(fact != null){
         res.status(200);
