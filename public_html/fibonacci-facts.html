@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibonacci Facts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --dark-blue: #2c3e50;
+        }
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        h1, h2 {
+            color: var(--dark-blue);
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        footer {
+            background-color: var(--dark-blue);
+            color: white;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        #facts-table thead {
+            background-color: var(--dark-blue);
+            color: white;
+        }
+        #error-msg {
+            color: red;
+            display: none;
+        }
+        #loading-msg {
+            display: none;
+        }
+        #facts-table {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Nature's Miracle - Fibonacci Explorer</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainMenu">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="fibonacci-facts.html">Fibonacci Facts</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <h1 class="text-center">Fibonacci Facts</h1>
+                <p class="text-center">Interesting facts about the Fibonacci sequence, loaded directly from our server.</p>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <input type="hidden" id="txt-id">
+                <input type="text" class="form-control mb-2" id="txt-fact" placeholder="Enter a fact...">
+                <button class="btn btn-success" onclick="saveFact()">Save Fact</button>
+                <button class="btn btn-secondary ms-2" onclick="clearForm()">Clear</button>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <button class="btn btn-primary btn-lg" onclick="loadFacts()">Load Fibonacci Facts</button>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-12 text-center">
+                <div id="loading-msg">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p>Loading facts from server...</p>
+                </div>
+                <p id="error-msg">Error loading facts. Please try again.</p>
+            </div>
+        </div>
+
+        <div class="row mt-3 mb-5">
+            <div class="col-12">
+                <table class="table table-striped table-bordered" id="facts-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Fibonacci Fact</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facts-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <h5>Nature's Miracle</h5>
+                    <p>An educational exploration of the Fibonacci sequence and its appearances in mathematics, nature, and art.</p>
+                </div>
+                <div class="col-12 col-md-6">
+                    <p class="text-center">CS 456 - Web Programming</p>
+                    <p class="text-center">Spring 2026</p>
+                    <p class="text-center">&copy; 2026 Christopher Madden</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadFacts() {
+            let loadingMsg = document.getElementById('loading-msg');
+            let errorMsg = document.getElementById('error-msg');
+            let factsTable = document.getElementById('facts-table');
+            let factsBody = document.getElementById('facts-body');
+
+            loadingMsg.setAttribute('style', 'display: block;');
+            errorMsg.setAttribute('style', 'display: none;');
+            factsTable.setAttribute('style', 'display: none;');
+
+            fetch('/api/fibonacci-facts')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    factsBody.innerHTML = '';
+
+                    for (let item of data) {
+                        let row = document.createElement('tr');
+
+                        let idCell = document.createElement('td');
+                        idCell.innerHTML = item.id;
+
+                        let factCell = document.createElement('td');
+                        factCell.innerHTML = item.fact;
+
+                        let editCell = document.createElement('td');
+                        let editBtn = document.createElement('button');
+                        editBtn.innerHTML = 'Edit';
+                        editBtn.setAttribute('class', 'btn btn-warning btn-sm');
+                        editBtn.setAttribute('onclick', 'editFact(' + item.id + ', "' + item.fact + '")');
+                        editCell.appendChild(editBtn);
+
+                        let deleteCell = document.createElement('td');
+                        let deleteBtn = document.createElement('button');
+                        deleteBtn.innerHTML = 'Delete';
+                        deleteBtn.setAttribute('class', 'btn btn-danger btn-sm');
+                        deleteBtn.setAttribute('onclick', 'deleteFact(' + item.id + ')');
+                        deleteCell.appendChild(deleteBtn);
+
+                        row.appendChild(idCell);
+                        row.appendChild(factCell);
+                        row.appendChild(editCell);
+                        row.appendChild(deleteCell);
+                        factsBody.appendChild(row);
+                    }
+
+                    loadingMsg.setAttribute('style', 'display: none;');
+                    factsTable.setAttribute('style', 'display: table;');
+                })
+                .catch(function(err) {
+                    loadingMsg.setAttribute('style', 'display: none;');
+                    errorMsg.setAttribute('style', 'display: block;');
+                    console.log(err);
+                });
+        }
+
+        function editFact(id, fact) {
+            document.getElementById('txt-id').value = id;
+            document.getElementById('txt-fact').value = fact;
+        }
+
+        function clearForm() {
+            document.getElementById('txt-id').value = '';
+            document.getElementById('txt-fact').value = '';
+        }
+
+        function saveFact() {
+            let id = document.getElementById('txt-id').value;
+            let fact = document.getElementById('txt-fact').value;
+
+            if(fact === ''){
+                alert('Please enter a fact!');
+                return;
+            }
+
+            if(id !== ''){
+                fetch('/api/fibonacci-facts/' + id, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id: parseInt(id), fact: fact})
+                })
+                .then(function(response) { return response.json(); })
+                .then(function() { clearForm(); loadFacts(); })
+                .catch(function(err) { console.log(err); });
+            } else {
+                fetch('/api/fibonacci-facts', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({fact: fact})
+                })
+                .then(function(response) { return response.json(); })
+                .then(function() { clearForm(); loadFacts(); })
+                .catch(function(err) { console.log(err); });
+            }
+        }
+
+        function deleteFact(id) {
+            fetch('/api/fibonacci-facts/' + id, {
+                method: 'DELETE'
+            })
+            .then(function(response) { return response.json(); })
+            .then(function() { loadFacts(); })
+            .catch(function(err) { console.log(err); });
+        }
+    </script>
+
+</body>
+</html>
