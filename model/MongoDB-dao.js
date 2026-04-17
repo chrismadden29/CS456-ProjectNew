@@ -13,13 +13,13 @@ exports.readAllFacts = async function(){
 }
 
 //Referenced class examples 
-exports.read = async function(uid){
+exports.readFact = async function(uid){
     const fact = await fibonacciModel.findById(uid);
     return fact;
 }
 
 //Referenced class examples 
-exports.create = async function(fact){
+exports.createFact = async function(fact){
     const mongoFact = new fibonacciModel(fact);
     await mongoFact.save();
     return mongoFact;
@@ -27,13 +27,13 @@ exports.create = async function(fact){
 
 //Referenced mongoose documentation for findByIdAndUpdate
 //https://mongoosejs.com/docs/api/model.html#Model.findByIdAndUpdate()
-exports.update = async function(updatedFact, uid){
+exports.updateFact = async function(updatedFact, uid){
     const factToUpdate = await fibonacciModel.findByIdAndUpdate(uid, updatedFact, {new: true});
     return factToUpdate;
 }
 
 //Referenced in class examples
-exports.del = async function(uid){
+exports.delFact = async function(uid){
     const deletedFact = await fibonacciModel.findByIdAndDelete(uid);
     return deletedFact;
 }
