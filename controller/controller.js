@@ -10,7 +10,7 @@ exports.getAllFacts = async function(req, res){
 //Async function for new dao
 exports.getFact = async function(req, res){
     let id = req.params.id; //Removed parseint because MongoDB id's are strings
-    let fact = await dao.readFact(id);
+    let fact = await dao.readFact(id); //Await call because its now async
 
     if(fact != null){
         res.status(200);
@@ -21,10 +21,10 @@ exports.getFact = async function(req, res){
     }
 };
 
-exports.create = function(req, res){
+exports.createFact = async function(req, res){ //Switch to async
     let fact = req.body;
     if(fact != null && fact.fact != null){
-        let createdFact = dao.create(fact);
+        let createdFact = await dao.createFact(fact); //add await because its now async
         res.status(201);
         res.send(createdFact);
     } else {
@@ -33,12 +33,11 @@ exports.create = function(req, res){
     }
 };
 
-exports.update = function(req, res){
-    let id = parseInt(req.params.id);
+exports.updateFact = async function(req, res){ //Switch to async
+    let uid = req.params.id;
     let fact = req.body;
-    if(fact != null && fact.fact != null){
-        fact.id = id;
-        let updatedFact = dao.update(id, fact);
+    if(fact != null && fact.fact != null){ 
+        let updatedFact = await dao.updateFact(fact, uid); //add await because function is now async
         if(updatedFact != null){
             res.status(200);
             res.send(updatedFact);
