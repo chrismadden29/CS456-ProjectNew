@@ -49,9 +49,9 @@ exports.updateFact = async function(req, res){ //Switch to async
     }
 };
 
-exports.delete = function(req, res){
-    let id = parseInt(req.params.id);
-    let deletedFact = dao.delete(id);
+exports.delFact = async function(req, res){//switch to async
+    let id = req.params.id;
+    let deletedFact = await dao.delFact(id); //added await because its async now and also 
     if(deletedFact != null){
         res.status(200);
         res.send(deletedFact);
