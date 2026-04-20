@@ -133,7 +133,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function loadFacts() {
+        //based off of in class examples
+        async function loadFacts() { //async function for mongodb
             let loadingMsg = document.getElementById('loading-msg');
             let errorMsg = document.getElementById('error-msg');
             let factsTable = document.getElementById('facts-table');
@@ -143,51 +144,30 @@
             errorMsg.setAttribute('style', 'display: none;');
             factsTable.setAttribute('style', 'display: none;');
 
-            fetch('/api/fibonacci-facts')
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(data) {
-                    factsBody.innerHTML = '';
+            try{
+                const response = await fetch('/api/fibonacci-facts')
+                const data = await response.json();
+                    let output = '';
 
                     for (let item of data) {
-                        let row = document.createElement('tr');
-
-                        let idCell = document.createElement('td');
-                        idCell.innerHTML = item.id;
-
-                        let factCell = document.createElement('td');
-                        factCell.innerHTML = item.fact;
-
-                        let editCell = document.createElement('td');
-                        let editBtn = document.createElement('button');
-                        editBtn.innerHTML = 'Edit';
-                        editBtn.setAttribute('class', 'btn btn-warning btn-sm');
-                        editBtn.setAttribute('onclick', 'editFact(' + item.id + ', "' + item.fact + '")');
-                        editCell.appendChild(editBtn);
-
-                        let deleteCell = document.createElement('td');
-                        let deleteBtn = document.createElement('button');
-                        deleteBtn.innerHTML = 'Delete';
-                        deleteBtn.setAttribute('class', 'btn btn-danger btn-sm');
-                        deleteBtn.setAttribute('onclick', 'deleteFact(' + item.id + ')');
-                        deleteCell.appendChild(deleteBtn);
-
-                        row.appendChild(idCell);
-                        row.appendChild(factCell);
-                        row.appendChild(editCell);
-                        row.appendChild(deleteCell);
-                        factsBody.appendChild(row);
+                        output += `
+                        <tr>
+                        <td>${item._id}</td>  
+                        <td> ${item.fact} </td>
+                        <td><button class="btn btn-warning btn-sm" onclick="editFact('${item._id}', '${item.fact}')">Edit</button></td>
+                        <td><button class="btn btn-danger btn-sm" onclick="deleteFact('${item._id}')">Delete</button></td>
+                        </tr>
+                        `;
                     }
+                factsBody.innerHTML = output;
 
-                    loadingMsg.setAttribute('style', 'display: none;');
-                    factsTable.setAttribute('style', 'display: table;');
-                })
-                .catch(function(err) {
-                    loadingMsg.setAttribute('style', 'display: none;');
-                    errorMsg.setAttribute('style', 'display: block;');
-                    console.log(err);
-                });
+                loadingMsg.setAttribute('style', 'display: none;');
+                factsTable.setAttribute('style', 'display: table;');
+                
+            }catch(err){
+                loadingMsg.style.display = 'none';
+                errorMsg.style.display = 'block';
+            };
         }
 
         function editFact(id, fact) {
@@ -200,7 +180,7 @@
             document.getElementById('txt-fact').value = '';
         }
 
-        async function saveFact() {
+        async function saveFact() { //async function for mongodb
             let id = document.getElementById('txt-id').value;
             let fact = document.getElementById('txt-fact').value;
 
