@@ -200,7 +200,7 @@
             document.getElementById('txt-fact').value = '';
         }
 
-        function saveFact() {
+        async function saveFact() {
             let id = document.getElementById('txt-id').value;
             let fact = document.getElementById('txt-fact').value;
 
@@ -209,24 +209,28 @@
                 return;
             }
 
-            if(id !== ''){
-                fetch('/api/fibonacci-facts/' + id, {
-                    method: 'PUT',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({id: parseInt(id), fact: fact})
-                })
-                .then(function(response) { return response.json(); })
-                .then(function() { clearForm(); loadFacts(); })
-                .catch(function(err) { console.log(err); });
-            } else {
-                fetch('/api/fibonacci-facts', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({fact: fact})
-                })
-                .then(function(response) { return response.json(); })
-                .then(function() { clearForm(); loadFacts(); })
-                .catch(function(err) { console.log(err); });
+            try{
+                if(id !== ''){
+                    const response = await fetch('/api/fibonacci-facts/' + id, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({id: parseInt(id), fact: fact})
+                    })
+                await response.json();
+                clearForm();
+                loadFacts();
+                } else {
+                    const response = await fetch('/api/fibonacci-facts', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({fact: fact})
+                    })
+                await response.json();
+                clearForm();
+                loadFacts();
+                }
+            } catch(err){
+                console.log(err);
             }
         }
 
