@@ -37,3 +37,10 @@ exports.delFact = async function(uid){
     const deletedFact = await fibonacciModel.findByIdAndDelete(uid);
     return deletedFact;
 }
+
+//In class examples
+exports.deleteAll = async function(check){ 
+    if(check === "test"){
+        await fibonacciModel.deleteMany();
+    }
+}
