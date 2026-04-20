@@ -230,13 +230,16 @@
             }
         }
 
-        function deleteFact(id) {
-            fetch('/api/fibonacci-facts/' + id, {
-                method: 'DELETE'
-            })
-            .then(function(response) { return response.json(); })
-            .then(function() { loadFacts(); })
-            .catch(function(err) { console.log(err); });
+        async function deleteFact(id) { //make async so it works with mongodb
+            try{
+                const response = await fetch('/api/fibonacci-facts/' + id, {
+                    method: 'DELETE'
+                })
+                await response.json();
+                loadFacts();
+            } catch(err){
+                console.log(err);
+            }
         }
     </script>
 
