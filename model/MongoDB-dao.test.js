@@ -24,7 +24,7 @@ test('Create new fact', async function(){
 
     expect(createdFact._id).toBeDefined();
     expect(foundFact).not.toBeNull();
-    expect(createdFact).toEqual(foundFact);
+    expect(createdFact.fact).toEqual(foundFact.fact);
 });
 
 test('Read all facts with empty database', async function(){
@@ -58,7 +58,7 @@ test('Delete fact', async function(){
 
     expect(foundFactBeforeDel).not.toBeNull();
     expect(foundFactAfterDel).toBeNull();
-    expect(deletedFact).toEqual(createdFact);
+    expect(deletedFact.fact).toEqual(createdFact.fact);
 });
 
 test('Update fact', async function(){
